@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { motion } from 'framer-motion';
 import FileItem from './FileItem';
 import FileDetailsDialog from './FileDetailsDialogue';
 import ActionButton from './ActionButton';
+import { PlusIcon, ArrowUpIcon, FolderIcon, TrashIcon } from '@heroicons/react/24/outline';
 
 const FileExplorer = () => {
   const [items, setItems] = useState([]);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -16,6 +19,7 @@ const FileExplorer = () => {
   }, [id]);
 
   const fetchItems = async () => {
+    setIsLoading(true);
     try {
       let response;
       if (id) {
@@ -31,6 +35,7 @@ const FileExplorer = () => {
     } catch (error) {
       console.error('Error fetching items:', error);
     }
+    setIsLoading(false);
   };
 
   const handleItemClick = (item) => {
@@ -85,25 +90,57 @@ const FileExplorer = () => {
     navigate(-1);
   };
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
   return (
-    <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-semibold">{id ? 'Directory Contents' : 'Root Directory'}</h2>
-        <div className="space-x-2">
-          <ActionButton onClick={handleCreateDirectory}>New Directory</ActionButton>
-          <ActionButton as="label">
+    <div className="space-y-6">
+      <motion.div 
+        className="flex justify-between items-center bg-white p-4 rounded-lg shadow-md"
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
+        <h2 className="text-2xl font-semibold text-primary-600">{id ? 'Directory Contents' : 'Root Directory'}</h2>
+        <div className="flex space-x-2">
+          <ActionButton onClick={handleCreateDirectory} icon={<PlusIcon className="w-5 h-5" />}>
+            New Directory
+          </ActionButton>
+          <ActionButton as="label" icon={<PlusIcon className="w-5 h-5" />}>
             Upload File
             <input type="file" className="hidden" onChange={handleUploadFile} />
           </ActionButton>
-          {id && <ActionButton onClick={handleNavigateUp}>Up</ActionButton>}
-          {id && <ActionButton onClick={handleDeleteDirectory} className="bg-red-500 hover:bg-red-600">Delete Directory</ActionButton>}
+          {id && <ActionButton onClick={handleNavigateUp} icon={<ArrowUpIcon className="w-5 h-5" />}>Up</ActionButton>}
+          {id && (
+            <ActionButton onClick={handleDeleteDirectory} className="bg-red-500 hover:bg-red-600" icon={<TrashIcon className="w-5 h-5" />}>
+              Delete Directory
+            </ActionButton>
+          )}
         </div>
-      </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {items.map((item) => (
-          <FileItem key={item.id} item={item} onClick={() => handleItemClick(item)} />
-        ))}
-      </div>
+      </motion.div>
+      {isLoading ? (
+        <div className="flex justify-center items-center h-64">
+          <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-primary-600"></div>
+        </div>
+      ) : (
+        <motion.div 
+          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          {items.map((item) => (
+            <FileItem key={item.id} item={item} onClick={() => handleItemClick(item)} />
+          ))}
+        </motion.div>
+      )}
       {selectedFile && (
         <FileDetailsDialog
           file={selectedFile}
