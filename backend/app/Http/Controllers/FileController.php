@@ -19,9 +19,16 @@ class FileController extends Controller
 
     public function store(Request $request)
     {
+        $validatedData = $request->validate([
+            'file' => 'required|file',
+            'directory_id' => 'nullable|exists:directories,id',
+        ]);
+
+        $path = $request->file('file')->store('files');
+
         $file = new File();
-        $file->name = $request->name;
-        $file->path = $request->path;
+        $file->name = $request->file('file')->getClientOriginalName();
+        $file->path = $path;
         $file->directory_id = $request->directory_id;
         $file->save();
 
