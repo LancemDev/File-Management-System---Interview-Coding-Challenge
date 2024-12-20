@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { motion } from 'framer-motion';
 import FileItem from './FileItem';
 import FileDetailsDialog from './FileDetailsDialogue';
 import ActionButton from './ActionButton';
-import { PlusIcon, ArrowUpIcon, FolderIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { PlusIcon, ArrowUpIcon, TrashIcon } from '@heroicons/react/24/outline';
 
 const FileExplorer = () => {
   const [items, setItems] = useState([]);
@@ -13,6 +13,7 @@ const FileExplorer = () => {
   const [isLoading, setIsLoading] = useState(true);
   const { id } = useParams();
   const navigate = useNavigate();
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     fetchItems();
@@ -113,10 +114,15 @@ const FileExplorer = () => {
           <ActionButton onClick={handleCreateDirectory} icon={<PlusIcon className="w-5 h-5" />}>
             New Directory
           </ActionButton>
-          <ActionButton as="label" icon={<PlusIcon className="w-5 h-5" />}>
+          <ActionButton onClick={() => fileInputRef.current.click()} icon={<PlusIcon className="w-5 h-5" />}>
             Upload File
-            <input type="file" className="hidden" onChange={handleUploadFile} />
           </ActionButton>
+          <input
+            type="file"
+            ref={fileInputRef}
+            className="hidden"
+            onChange={handleUploadFile}
+          />
           {id && <ActionButton onClick={handleNavigateUp} icon={<ArrowUpIcon className="w-5 h-5" />}>Up</ActionButton>}
           {id && (
             <ActionButton onClick={handleDeleteDirectory} className="bg-red-500 hover:bg-red-600" icon={<TrashIcon className="w-5 h-5" />}>
@@ -154,4 +160,3 @@ const FileExplorer = () => {
 };
 
 export default FileExplorer;
-
