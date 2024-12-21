@@ -4,6 +4,8 @@
 
 File Mosaic is a web-based file management application that allows users to organize, upload, download, and manage files and directories. The application features a user-friendly interface with a grid and list view, breadcrumb navigation, and a responsive design. Built with React, TypeScript, and Tailwind CSS for the frontend, and Laravel for the backend, it provides a seamless experience for managing files in a structured manner.
 
+![File Mosaic](backend/public/images/Screenshot_20241221_112833.png)
+
 ## Table of Contents
 
 - [Features](#features)
