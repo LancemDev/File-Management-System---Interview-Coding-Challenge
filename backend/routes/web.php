@@ -8,18 +8,21 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// File routes
-Route::get('/api/files', [FileController::class, 'index'])->name('api.files');
-Route::get('/api/files/{id}', [FileController::class, 'show'])->name('api.files.show');
-Route::post('/api/files', [FileController::class, 'store'])->name('api.files');
-Route::put('/api/files/{id}', [FileController::class, 'update'])->name('api.files');
-Route::delete('/api/files/{id}', [FileController::class, 'destroy'])->name('api.files');
+// Group API routes with a prefix
+Route::prefix('api')->group(function () {
+    // File routes
+    Route::get('/files', [FileController::class, 'index'])->name('api.files');
+    Route::get('/files/{id}', [FileController::class, 'show'])->name('api.files.show');
+    Route::post('/files', [FileController::class, 'store'])->name('api.files.store');
+    Route::put('/files/{id}', [FileController::class, 'update'])->name('api.files.update');
+    Route::delete('/files/{id}', [FileController::class, 'destroy'])->name('api.files.destroy');
+    Route::get('/files/{id}/download', [FileController::class, 'download'])->name('api.files.download');
 
-// Directory routes
-Route::get('/api/directories', [DirectoryController::class, 'index'])->name('api.directories');
-Route::get('/api/directories/{id}/sub-directories', [DirectoryController::class, 'getSubDirectories'])->name('api.directories.sub-directories');
-Route::get('/api/directories/{id}/files', [DirectoryController::class, 'getFiles'])->name('api.directories.files');
-Route::post('/api/directories', [DirectoryController::class, 'store'])->name('api.directories');
-Route::put('/api/directories/{id}', [DirectoryController::class, 'update'])->name('api.directories');
-Route::delete('/api/directories/{id}', [DirectoryController::class, 'destroy'])->name('api.directories');
-Route::get('/files{id}/download', [FileController::class, 'download'])->name('files.download');
+    // Directory routes
+    Route::get('/directories', [DirectoryController::class, 'index'])->name('api.directories');
+    Route::get('/directories/{id}/sub-directories', [DirectoryController::class, 'getSubDirectories'])->name('api.directories.sub-directories');
+    Route::get('/directories/{id}/files', [DirectoryController::class, 'getFiles'])->name('api.directories.files');
+    Route::post('/directories', [DirectoryController::class, 'store'])->name('api.directories.store');
+    Route::put('/directories/{id}', [DirectoryController::class, 'update'])->name('api.directories.update');
+    Route::delete('/directories/{id}', [DirectoryController::class, 'destroy'])->name('api.directories.destroy');
+});

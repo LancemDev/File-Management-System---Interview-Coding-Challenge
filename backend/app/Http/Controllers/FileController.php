@@ -20,18 +20,23 @@ class FileController extends Controller
     public function download($id)
     {
         // Find the file by ID
-        $file = File::findOrFail($id); // Ensure you handle the case where the file is not found
+        $file = File::findOrFail($id);
 
-        // Get the file path
-        $filePath = storage_path('files/' . $file->filename); // Adjust the path as necessary
+        // Get the relative file path from the database
+        $relativePath = $file->path;
+
+        // Construct the absolute file path
+        $filePath = storage_path('app/' . $relativePath);
 
         // Check if the file exists
         if (!file_exists($filePath)) {
             return response()->json(['error' => 'File not found.'], 404);
         }
 
-        // Return the file as a response
-        return response()->download($filePath, $file->name); // You can specify the name for the download
+        // Return the file as a response with the content-disposition header
+        return response()->download($filePath, $file->name, [
+            'Content-Disposition' => 'attachment; filename="' . $file->name . '"'
+        ]);
     }
 
     public function store(Request $request)
