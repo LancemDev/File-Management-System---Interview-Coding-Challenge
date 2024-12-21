@@ -22,6 +22,7 @@ Route::get('/api/directories/{id}/files', [DirectoryController::class, 'getFiles
 Route::post('/api/directories', [DirectoryController::class, 'store']);
 Route::put('/api/directories/{id}', [DirectoryController::class, 'update']);
 Route::delete('/api/directories/{id}', [DirectoryController::class, 'destroy']);
+Route::get('/files{id}/download', [FileController::class, 'download']);
 
 
 Route::get('/test-upload', function(){

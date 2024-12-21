@@ -7,7 +7,7 @@
 </head>
 <body>
     <form action="{{ route('api.files') }}" method="POST" enctype="multipart/form-data">
-        @csrf
+    
         <input type="file" name="file">
         <input type="submit" value="Upload">
     </form>

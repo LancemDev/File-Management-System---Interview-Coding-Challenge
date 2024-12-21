@@ -17,6 +17,23 @@ class FileController extends Controller
         return File::findOrFail($id);
     }
 
+    public function download($id)
+    {
+        // Find the file by ID
+        $file = File::findOrFail($id); // Ensure you handle the case where the file is not found
+
+        // Get the file path
+        $filePath = storage_path('files/' . $file->filename); // Adjust the path as necessary
+
+        // Check if the file exists
+        if (!file_exists($filePath)) {
+            return response()->json(['error' => 'File not found.'], 404);
+        }
+
+        // Return the file as a response
+        return response()->download($filePath, $file->name); // You can specify the name for the download
+    }
+
     public function store(Request $request)
     {
         $validatedData = $request->validate([
@@ -29,7 +46,7 @@ class FileController extends Controller
         $file = new File();
         $file->name = $request->file('file')->getClientOriginalName();
         $file->path = $path;
-        $file->directory_id = $request->input('directory_id', null); // Set to null if not provided
+        $file->directory_id = $request->input('directory_id', null); 
         $file->save();
     
         return response()->json($file, 201);
@@ -39,10 +56,13 @@ class FileController extends Controller
     {
         $file = File::findOrFail($id);
         $file->name = $request->name;
-        $file->path = $request->path;
         $file->directory_id = $request->directory_id;
+    
+        // Assuming the path can be derived from the name
+        $file->path = storage_path('app/files/' . $request->name);
+    
         $file->save();
-
+    
         return response()->json($file, 200);
     }
 
