@@ -48,7 +48,7 @@ File Mosaic is a web-based file management application that allows users to orga
 
 1. **Clone the repository**:
    ```bash
-   git clone github.com/LancemDev/ile-Management-System---Interview-Coding-Challenge.git
+   git clone github.com/LancemDev/File-Management-System---Interview-Coding-Challenge.git
    ```
 
 2. **Navigate to the frontend directory**:
