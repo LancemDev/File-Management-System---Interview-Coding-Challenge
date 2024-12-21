@@ -99,7 +99,18 @@ export const fileService = {
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
       link.href = url;
-      link.setAttribute("download", response.headers["content-disposition"].split("filename=")[1]);
+
+      // Extract the filename from the content-disposition header
+      const contentDisposition = response.headers["content-disposition"];
+      let fileName = "downloaded_file";
+      if (contentDisposition) {
+        const fileNameMatch = contentDisposition.match(/filename="?(.+)"?/);
+        if (fileNameMatch && fileNameMatch.length === 2) {
+          fileName = fileNameMatch[1];
+        }
+      }
+
+      link.setAttribute("download", fileName);
       document.body.appendChild(link);
       link.click();
       link.remove();
