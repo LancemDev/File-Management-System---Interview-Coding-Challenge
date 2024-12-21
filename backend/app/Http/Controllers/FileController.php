@@ -21,17 +21,17 @@ class FileController extends Controller
     {
         $validatedData = $request->validate([
             'file' => 'required|file',
-            'directory_id' => 'nullable|exists:directories,id',
+            'directory_id',
         ]);
-
+    
         $path = $request->file('file')->store('files');
-
+    
         $file = new File();
         $file->name = $request->file('file')->getClientOriginalName();
         $file->path = $path;
-        $file->directory_id = $request->directory_id;
+        $file->directory_id = $request->input('directory_id', null); // Set to null if not provided
         $file->save();
-
+    
         return response()->json($file, 201);
     }
 
